@@ -1,0 +1,9 @@
+yfinance
+textblob
+pandas
+numpy
+plotly
+dash
+transformers
+torch
+requests
