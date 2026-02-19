@@ -1,14 +1,11 @@
 from collections import OrderedDict
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Optional, List
 from stock_tracker.core.models import IndicatorState, SwingPoint
 
 @dataclass
 class AnalysisState:
-    """
-    Snapshot of analysis for a ticker to support incremental updates.
-    """
     ticker: str
     last_updated: datetime
     indicators: IndicatorState
@@ -16,11 +13,11 @@ class AnalysisState:
     last_score: float
     sentiment_score: Optional[float] = None
     last_price: Optional[float] = None
-    streaming_objects: Optional[Any] = None # Holds stateful indicator instances
+    streaming_objects: Optional[Any] = None
 
 class LRUCache:
-    def __init__(self, capacity: int = 50):
-        self.capacity = capacity
+    def __init__(self, max_len: int = 50):
+        self.max_len = max_len
         self.cache = OrderedDict()
 
     def get(self, key: str) -> Optional[AnalysisState]:
@@ -33,5 +30,5 @@ class LRUCache:
         if key in self.cache:
             self.cache.move_to_end(key)
         self.cache[key] = value
-        if len(self.cache) > self.capacity:
+        if len(self.cache) > self.max_len:
             self.cache.popitem(last=False)
